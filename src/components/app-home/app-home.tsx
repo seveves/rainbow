@@ -29,10 +29,10 @@ export class AppHome {
       const nextIndex = index + 1;
       if (this.items.length > nextIndex) {
         this.currentItem = this.items[nextIndex];
-        this.speak(this.currentItem, this.language);
       } else {
         this.currentItem = this.items[0];
       }
+      this.speak(this.currentItem, this.language);
     }
   }
 
