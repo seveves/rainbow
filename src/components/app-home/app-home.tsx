@@ -17,6 +17,40 @@ export class AppHome {
 
   @State() currentItem: RainbowItem;
 
+  speechSynth = window.speechSynthesis;
+  voices;
+  cache = {};
+
+  componentWillLoad() {
+    return new Promise((res) => {
+      this.loadVoicesWhenAvailable(() => res(null));
+    });
+  }
+
+  getVoices(locale) {
+    if (!this.speechSynth) {
+      throw new Error("Browser does not support speech synthesis");
+    }
+    if (this.cache[locale]) return this.cache[locale];
+
+    this.cache[locale] = this.voices.filter((voice) => voice.lang === locale);
+    return this.cache[locale];
+  }
+
+  loadVoicesWhenAvailable(onComplete = () => {}) {
+    this.speechSynth = window.speechSynthesis;
+    const voices = this.speechSynth.getVoices();
+
+    if (voices.length !== 0) {
+      this.voices = voices;
+      onComplete();
+    } else {
+      return setTimeout(function () {
+        this.loadVoicesWhenAvailable(onComplete);
+      }, 100);
+    }
+  }
+
   next() {
     if (this.items == null || this.items.length <= 0) {
       return;
@@ -36,7 +70,7 @@ export class AppHome {
       this.speak(this.currentItem.text, this.language).then(() => {
         setTimeout(() => {
           this.speak(this.currentItem.items, this.language);
-        }, 500)
+        }, 200);
       });
     }
   }
@@ -54,8 +88,14 @@ export class AppHome {
 
       setTimeout(() => {
         const msg = new SpeechSynthesisUtterance(text);
+        msg.voice = this.voices[0];
         msg.rate = 0.5;
-        window.speechSynthesis.speak(msg);
+        msg.pitch = 1;
+        msg.volume = 1;
+        msg.text = text;
+        msg.lang = language;
+        this.speechSynth.cancel();
+        this.speechSynth.speak(msg);
         msg.onend = (e) => res(e);
       }, 200);
     });
@@ -69,7 +109,11 @@ export class AppHome {
             class="colored-bg"
             style={{ backgroundColor: this.currentItem.color }}
           >
-            <img title="illustration" class="illustration" src={this.currentItem.items.image} />
+            <img
+              title="illustration"
+              class="illustration"
+              src={this.currentItem.items.image}
+            />
           </div>
         ) : (
           <div class="colored-bg">
