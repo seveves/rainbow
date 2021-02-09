@@ -95,7 +95,7 @@ export class AppHome {
       setTimeout(() => {
         const msg = new SpeechSynthesisUtterance(text);
         msg.voice = this.voices[0];
-        msg.rate = 0.5;
+        msg.rate = 1;
         msg.pitch = 1;
         msg.volume = 1;
         msg.text = text;

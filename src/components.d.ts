@@ -9,7 +9,6 @@ import { RainbowItem } from "./components/app-home/app-home";
 export namespace Components {
     interface AppHome {
         "items": RainbowItem[];
-        "language": string;
     }
     interface AppRoot {
     }
@@ -35,7 +34,6 @@ declare global {
 declare namespace LocalJSX {
     interface AppHome {
         "items"?: RainbowItem[];
-        "language"?: string;
     }
     interface AppRoot {
     }
