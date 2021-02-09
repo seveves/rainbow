@@ -27,7 +27,7 @@ export class AppHome {
     });
   }
 
-  getVoices(locale) {
+  getVoices(locale: string) {
     if (!this.speechSynth) {
       throw new Error("Browser does not support speech synthesis");
     }
@@ -45,7 +45,7 @@ export class AppHome {
       this.voices = voices;
       onComplete();
     } else {
-      return setTimeout(function () {
+      return setTimeout(() => {
         this.loadVoicesWhenAvailable(onComplete);
       }, 100);
     }
