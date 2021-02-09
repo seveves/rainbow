@@ -13,10 +13,9 @@ export interface RainbowItem {
 })
 export class AppHome {
   @Prop() items: RainbowItem[];
-  @Prop() language: string = navigator.language || "de-DE";
-
+  
   @State() currentItem: RainbowItem;
-
+  
   speechSynth = window.speechSynthesis;
   voices;
   cache = {};
@@ -67,9 +66,16 @@ export class AppHome {
       } else {
         this.currentItem = this.items[0];
       }
-      this.speak(this.currentItem.text, this.language).then(() => {
+      let language = navigator.language || "de-DE";
+      if (language.startsWith("de")) {
+        language = "de-DE";
+      } else {
+        language = "en-US";
+      }
+
+      this.speak(this.currentItem.text, language).then(() => {
         setTimeout(() => {
-          this.speak(this.currentItem.items, this.language);
+          this.speak(this.currentItem.items, language);
         }, 200);
       });
     }
@@ -83,7 +89,7 @@ export class AppHome {
 
       const text = texts[language];
       if (text == null) {
-        return rej(`text is not available for language "${language}`);
+        return rej(`text is not available for language "${language}"`);
       }
 
       setTimeout(() => {
